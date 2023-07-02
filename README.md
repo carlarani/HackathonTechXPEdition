@@ -1,6 +1,6 @@
 # HackathonTechXPEdition
 
-## Para testar o MVP recomendamos usar os dados fictícios abaixo e acessar uma das opções de link via navegador do celular
+## Para testar o MVP recomendamos usar os dados fictícios abaixo e acessar uma das opções de link via navegador do celular ou atraves de computador simulando tela de celular através do DevTools
 ### Opção 1 - https://carlarani.github.io/HackathonTechXPEdition/
 ### Opção 2 - https://hackathontechxpedition.netlify.app/
 
