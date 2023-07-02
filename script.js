@@ -12,20 +12,23 @@ var percentualInvestimentos = 0.3;
 //perguntas
 var perguntasPrimeiraAnalise = [
     "Qual o seu salário líquido?",
+    "Você faz algum tipo de controle das suas finanças? 1-Sim e 2-Não",
+    "Você anota TODOS os seus gastos? 1-Sim e 2-Não ",
     "Você possui alguma dívida? 1-Sim e 2-Não",
     "Qual o valor da sua dívida?",
     "Quanto você gasta por mês com custos fixos? Como aluguel, prestações, academia, internet, streamings",
     "Quanto você gasta por mês com custos variáveis? Como alimentação, energia, gasolina, lazer",
-    "Quanto você investe ou guarda por mês?",
+    "Quanto você investe ou guarda por mês?"
 ]
 
 //feedbacks primeira análise
 var feedbacksPrimeiraAnalise = [
-    "O valor da sua renda comprometida com dívida está perigoso! Bora organizar as contas para quitar esta dívida??", 
+    "Não controlamos o que não conhecemos então este será nosso ponto de partida. Mas fica tranquilo que vai ser tão fácil quanto responder uma mensagem de Whats. Amanhã vou te mandar mensagem aqui e ai você me conta em tudo que gastou dinheiro ao longo do dia. Vamos fazer isso nos próximos dias até termos alguma infomação para poder analisar suas finanças. Combinado? Até amanhã.",
+    "O seu endividamento está acima do recomendado! Como eu calculo isso: valor da sua dívida/renda líquid", 
     "Ninguém gosta de ficar devendo na praça. Mas sua dívida está dentro dos limites aceitáveis para a sua renda então se fizermos um bom plano daqui pra frente esta dívida será quitada sem problemas.", 
     "Ihh esses custos fixos estão muito altos. Vamos ter que analisar um a um para melhorar isso aí. Mas fica tranquilo, vamos fazer isso juntos!", 
     "Seus custos variáveis precisam de atenção, sabe aqueles do dia a dia, um cafezinho aqui, um pedido de delivery ali?", 
-    "Deixa eu adivinhar! Você só investe o que sobra no final do mês. E nunca sobra nada né!? Você não está sozinho, isso acontece com muita gente por ai, mas tem jeitode mudar essa realidade! Quer começar agora? Ou já? "
+    "Deixa eu adivinhar! Você só investe o que sobra no final do mês. E quase não sobra nada né!? Você não está sozinho, isso acontece com muita gente por ai, mas tem jeitode mudar essa realidade! Quer começar agora? Ou já? "
 ]
 
 //objeto usuario
@@ -35,7 +38,9 @@ var usuario = {
     endividado:false, 
     valorDivida:0, 
     custoFixo:0, 
-    custoVariavel:0, 
+    custoVariavel:0,
+    temControle:false,
+    perfilControle:0, 
     investimentoMensal:0,
     percentualEndividamento: 0,
     percentualComprometidoCustoFixo: 0,
@@ -69,23 +74,37 @@ function userSendMessage() {
             break;
         case 2:
             if(message=="1")
-                usuario.endividado=true;
-            else
-                interaction++;
+                usuario.temControle=true;
+            else{
+                usuario.perfilControle=3;
+                interaction = interaction+6;
+            }
             break;
         case 3:
+            if(message=="1")
+                usuario.perfilControle=1;
+            else
+                usuario.perfilControle=2;
+            break;
+        case 4:
+            if(message=="1")
+                usuario.endividado=true;
+            else
+               interaction++
+            break;
+        case 5:
             usuario.valorDivida = message;
             usuario.percentualEndividamento = usuario.valorDivida/usuario.rendaLiquida;
             break;
-        case 4: 
+        case 6: 
             usuario.custoFixo = message;
             usuario.percentualComprometidoCustoFixo = usuario.custoFixo/usuario.rendaLiquida;
             break;
-        case 5:
+        case 7:
             usuario.custoVariavel = message;
             usuario.percentualComprometidoCustoVariavel = usuario.custoVariavel/usuario.rendaLiquida;
             break;
-        case 6:
+        case 8:
             usuario.investimentoMensal = message;
             usuario.percentualComprometidoInvestimentos = usuario.investimentoMensal/usuario.rendaLiquida;
             break;
@@ -94,6 +113,10 @@ function userSendMessage() {
 }
 
 function botResponseManagement(){
+    if(interaction==1){
+        botSendMessage("Olá "+usuario.nome+"! Que bom te ver por aqui. Já vou te avisando que aqui falamos abertamente sobre dinheiro e pode ficar tranquilo que seus dados ficarão completamente protegidos, beleza? Então vamos direto ao ponto...")
+    }
+    
     if(interaction-1<perguntasPrimeiraAnalise.length)
         botSendMessage(perguntasPrimeiraAnalise[interaction-1]);
     else
@@ -114,27 +137,33 @@ function primeiraAnalisePerfil(){
     var message=[];
     var atencao=0;
 
-    if(usuario.endividado && usuario.percentualEndividamento>percetualEndividamentoAceitavel)
-    {
-        message[atencao] = feedbacksPrimeiraAnalise[0]
-        atencao++;
+    if(usuario.perfilControle==3){
+        message[atencao] = feedbacksPrimeiraAnalise[0];
+        atencao++;   
+    }else{
+        if(usuario.endividado && usuario.percentualEndividamento>percetualEndividamentoAceitavel)
+        {
+            message[atencao] = feedbacksPrimeiraAnalise[1]
+            atencao++;
+        }
+        if (usuario.endividado && usuario.percentualEndividamento<=percetualEndividamentoAceitavel) {
+            message[atencao] = feedbacksPrimeiraAnalise[2]
+            atencao++;
+        }
+        if(usuario.percentualComprometidoCustoFixo>percentualCustoFixo){
+            message[atencao] = feedbacksPrimeiraAnalise[3]
+            atencao++;
+        }
+        if(usuario.percentualComprometidoCustoVariavel>percentualCustoVariavel){
+            message[atencao] = feedbacksPrimeiraAnalise[4]
+            atencao++;
+        }
+        if(usuario.percentualComprometidoInvestimentos<percentualInvestimentos){
+            message[atencao] = feedbacksPrimeiraAnalise[5]
+            atencao++;
+        }
     }
-    if (usuario.endividado && usuario.percentualEndividamento<=percetualEndividamentoAceitavel) {
-        message[atencao] = feedbacksPrimeiraAnalise[1]
-        atencao++;
-    }
-    if(usuario.percentualComprometidoCustoFixo>percentualCustoFixo){
-        message[atencao] = feedbacksPrimeiraAnalise[2]
-        atencao++;
-    }
-    if(usuario.percentualComprometidoCustoVariavel>percentualCustoVariavel){
-        message[atencao] = feedbacksPrimeiraAnalise[3]
-        atencao++;
-    }
-    if(usuario.percentualComprometidoInvestimentos<percentualInvestimentos){
-        message[atencao] = feedbacksPrimeiraAnalise[4]
-        atencao++;
-    }
+
     //console.log(message);
 
     if(atencao>0)
