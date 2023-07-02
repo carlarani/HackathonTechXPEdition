@@ -1,0 +1,73 @@
+/* index */
+nav{
+    position: fixed;
+}
+
+h1{
+    padding-top: 8%;
+    padding-bottom: 3%;
+}
+
+.desafio-semanal{
+    width: 50%;
+    height: auto;
+    align-self: center;
+}
+
+.card-suas-economias{
+    width: 33%;
+}
+
+.card-group-suas-economias{
+    display: flex;
+    justify-content: center;
+}
+
+/* chatAI */
+
+
+.chat{
+    z-index: 5;
+    height:80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    padding-bottom: 70px;
+}
+
+.fala-robo{
+    margin: 0 15 0 auto;
+    text-align: end;
+}
+.fala-usuario{
+    margin: 0 auto 0 15;
+    text-align:left;
+}
+
+.icon-robo, .icon-usuario{
+    margin:2%;
+}
+
+.card-chat{
+    width: 80vw;
+    margin-top: 15px;
+}
+
+.card-body{
+    display: flex;
+    align-items: center;
+}
+
+.div-envia-mensagem{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 15px;
+}
+
+.envia-mensagem{
+    width: 90vw;
+    height: 1.2rem;
+}
